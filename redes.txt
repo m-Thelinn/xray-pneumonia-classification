@@ -1,0 +1,128 @@
+def cnn_model(input_shape):
+    input_layer = Input(shape=input_shape)
+
+    x = Rescaling(1./255)(input_layer)
+
+    x = Conv2D(32, (3, 3))(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Conv2D(16, (5, 5))(x)
+    x = Activation("relu")(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Conv2D(8, (5, 5))(x)
+    x = Activation("relu")(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Flatten()(x)
+
+    x = Dense(120)(x)
+    x = Activation("relu")(x)
+
+    x = Dense(84)(x)
+    x = Activation("relu")(x)
+
+    output_layer = Dense(NB_CLASSES, activation='softmax')(x)
+
+    model = Model(inputs=input_layer, outputs=output_layer)
+
+    return model
+
+
+
+def cnn_model(input_shape):
+    input_layer = Input(shape=input_shape)
+
+    x = Rescaling(1./255)(input_layer)
+
+    x = Conv2D(32, (3, 3))(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Conv2D(24, (3, 3))(x)
+    x = Activation("relu")(x)
+    x = Conv2D(16, (5, 5))(x)
+    x = Activation("relu")(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Conv2D(8, (5, 5))(x)
+    x = Activation("relu")(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Flatten()(x)
+
+    x = Dense(64)(x)
+    x = Activation("relu")(x)
+
+    x = Dense(128)(x)
+    x = Activation("relu")(x)
+
+
+    output_layer = Dense(NB_CLASSES, activation='softmax')(x)
+
+    model = Model(inputs=input_layer, outputs=output_layer)
+
+    return model
+
+
+def cnn_model(input_shape):
+    input_layer = Input(shape=input_shape)
+
+    x = Rescaling(1./255)(input_layer)
+
+    x = Conv2D(32, (3, 3))(x)
+    x = Activation('relu')(x)
+    x = Conv2D(32, (3, 3))(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Conv2D(16, (5, 5))(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Conv2D(8, (5, 5))(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = Flatten()(x)
+
+    x = Dense(128)(x)
+    x = Activation("relu")(x)
+
+    x = Dense(64)(x)
+    x = Activation("relu")(x)
+
+
+    output_layer = Dense(NB_CLASSES, activation='softmax')(x)
+
+    model = Model(inputs=input_layer, outputs=output_layer)
+
+    return model
+
+
+
+def load_data():
+    name_classes = ['NORMAL', 'PNEUMONIA']
+
+    X, y = [], []
+    for class_number, class_name in enumerate(name_classes):
+        for filename in glob.glob(f'./chest_xray_512/{class_name}/*.jpg'):
+            im = image.load_img(filename, target_size=[IMG_ROWS, IMG_COLS], color_mode='grayscale')
+            X.append(image.img_to_array(im))
+            print(filename)
+            if 'virus' in filename.lower():
+                y.append(1)
+            elif 'bacteria' in filename.lower():
+                y.append(2)
+            else:
+                y.append(0)
+
+    input_shape = (IMG_ROWS, IMG_COLS, 1)
+
+    return np.array(X), np.array(y), input_shape
